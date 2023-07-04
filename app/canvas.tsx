@@ -50,8 +50,7 @@ function onKeyDown(board: Board) {
 
 function runDaemon(board: Board) : number {
   // init.
-  const canvas = document.getElementById('canvas');
-  const context = canvas!.getContext('2d');
+  const context = getContext();
   context.translate(0, MAX_HEIGHT * DOT_LENGTH);
   context.scale(1, -1);
 
@@ -72,9 +71,7 @@ function rand(min: number, max: number) {
 
 function drawBoard(board: Board) {
   const blocks = board.active ? [board.active, board.blocks] : [board.blocks];
-
-  const canvas = document.getElementById('canvas');
-  const context = canvas!.getContext('2d');
+  const context = getContext();
 
   context.clearRect(0, 0, MAX_WIDTH * DOT_LENGTH, MAX_HEIGHT * DOT_LENGTH);
 
@@ -87,6 +84,13 @@ function drawBoard(board: Board) {
       context.fillRect(offsetX, offsetY, DOT_LENGTH, DOT_LENGTH);
     }
   }
+}
+
+function getContext(): CanvasRenderingContext2D {
+  const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+  const context = canvas!.getContext('2d');
+
+  return context!;
 }
 
 class Board {
@@ -117,11 +121,11 @@ class Board {
     const offset = new Point(this.active.offset.x, this.active.offset.y - 1);
     const newBlock = new Block(this.active.points, offset);
 
-    if (this.#has_collision(newBlock)) {
+    if (this.hasCollision(newBlock)) {
       this.blocks = this.blocks.merge(this.active);
       this.active = undefined;
 
-      this.blocks = this.#eraseLine(this.blocks);
+      this.blocks = this.eraseLine(this.blocks);
 
       return;
     }
@@ -137,7 +141,7 @@ class Board {
     const offset = new Point(this.active.offset.x - 1, this.active.offset.y);
     const newBlock = new Block(this.active.points, offset);
 
-    if (this.#has_collision(newBlock)) {
+    if (this.hasCollision(newBlock)) {
       return;
     }
 
@@ -152,7 +156,7 @@ class Board {
     const offset = new Point(this.active.offset.x + 1, this.active.offset.y);
     const newBlock = new Block(this.active.points, offset);
 
-    if (this.#has_collision(newBlock)) {
+    if (this.hasCollision(newBlock)) {
       return;
     }
 
@@ -164,11 +168,11 @@ class Board {
     return;
   }
 
-  #has_collision(block: Block): boolean {
+  hasCollision(block: Block): boolean {
     return !block.is_valid_offset() || this.blocks.has_collision(block);
   }
 
-  #eraseLine(blocks: Block): Block {
+  eraseLine(blocks: Block): Block {
     // validate for each lines.
     for (let i = 0; i < MAX_HEIGHT; i++) {
       const line = blocks.points.filter((point) => point.y === i);
@@ -179,7 +183,7 @@ class Board {
         blocks = new Block(points, blocks.offset);
 
         // call recursively.
-        return this.#eraseLine(blocks);
+        return this.eraseLine(blocks);
       }
     }
 
