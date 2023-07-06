@@ -34,6 +34,7 @@ function onKeyDown(board: Board): (event: KeyboardEvent) => void {
     39: () => board.right(),
     40: () => board.down(),
     32: () => board.rotate(),
+    38: () => board.rotate(),
   }
 
   return (event: KeyboardEvent) => {
