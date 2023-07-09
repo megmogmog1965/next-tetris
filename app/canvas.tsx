@@ -24,7 +24,7 @@ export default function Canvas() {
   }, [])
 
   return (
-    <canvas id="canvas" width={MAX_WIDTH * DOT_LENGTH} height={MAX_HEIGHT * DOT_LENGTH}></canvas>
+    <canvas id="canvas" width={MAX_WIDTH * DOT_LENGTH} height={MAX_HEIGHT * DOT_LENGTH} className="border-solid border-8 border-t-transparent border-b-sky-600 border-x-sky-600"></canvas>
   )
 }
 
